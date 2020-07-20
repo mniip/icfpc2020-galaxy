@@ -42,7 +42,7 @@ injectIntList (LInt int) = unsafeCoerce int
 newtype Drawing = Drawing [(Integer, Integer)] deriving (Eq, Ord, Show)
 newtype AlienState = AlienState IntList deriving (Eq, Ord, Show, Read)
 
--- Make a single interaction with a "protocol". Returns a 'Left' when the
+-- | Make a single interaction with a "protocol". Returns a 'Left' when the
 -- protocol is demanding to perform a transmission to the orbital ship. Returns
 -- a 'Right' when the protocol has constructed a set of pictures and demands a
 -- "click".

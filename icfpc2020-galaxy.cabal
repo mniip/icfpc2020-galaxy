@@ -1,7 +1,7 @@
 cabal-version:       >=1.10
 
 name:                icfpc2020-galaxy
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            A strange message received at the Pegovka observatory
 description:         A strange message received at the Pegovka observatory. For more info read https://icfpcontest2020.github.io/
 license:             MIT
