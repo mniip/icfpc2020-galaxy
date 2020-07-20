@@ -16,6 +16,7 @@ library
                    , Alien.FFI
                    , Alien.Prelude
                    , Alien.Galaxy
+                   , Alien.Galaxy2
   hs-source-dirs:
       ./src
   build-depends:       base >= 4.10 && < 4.15
