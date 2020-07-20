@@ -8,6 +8,7 @@ license:             MIT
 author:              mniip
 maintainer:          mniip@mniip.com
 copyright:           2020 mniip, 2020 ICFPC organizers
+category:            ACME
 build-type:          Simple
 
 library
@@ -17,7 +18,8 @@ library
                    , Alien.Galaxy
   hs-source-dirs:
       ./src
-  build-depends:       base >= 4.10
+  build-depends:       base >= 4.10 && < 4.15
                      , ghc-prim
                      , transformers >= 0.5
   ghc-options: -O2 -Wall -Wno-missing-signatures
+  default-language: Haskell2010
