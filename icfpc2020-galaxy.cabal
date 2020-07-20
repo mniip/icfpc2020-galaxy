@@ -2,13 +2,12 @@ cabal-version:       >=1.10
 
 name:                icfpc2020-galaxy
 version:             0.1.0.0
--- synopsis:
--- description:
--- bug-reports:
+synopsis:            A strange message received at the Pegovka observatory
+description:         A strange message received at the Pegovka observatory. For more info read https://icfpcontest2020.github.io/
 license:             MIT
 author:              mniip
 maintainer:          mniip@mniip.com
-copyright:           2020 mniip, 2020 ICPFC organizers
+copyright:           2020 mniip, 2020 ICFPC organizers
 build-type:          Simple
 
 library
@@ -18,7 +17,7 @@ library
                    , Alien.Galaxy
   hs-source-dirs:
       ./src
-  build-depends:       base >=4.10
+  build-depends:       base >= 4.10
                      , ghc-prim
                      , transformers >= 0.5
   ghc-options: -O2 -Wall -Wno-missing-signatures

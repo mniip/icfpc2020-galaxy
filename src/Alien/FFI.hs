@@ -7,24 +7,33 @@ import Unsafe.Coerce
 
 import qualified Alien.Prelude as A
 
--- Really more like, after WHNF, is this a closure of a constructor of some datatype, or is it still a function?
+-- | The aliens have clearly ascended past any need for types, using, perhaps
+-- some technique like "not making any mistakes in your code". 
+-- To them, @b (s i i) (c b (s i i))@ is perfectly valid. To us this is
+-- incomprehensible gibberish. It is for this reason that we shall ask the
+-- question which no human shall dare ask:
+--
+-- Is this value a data constructor, or a function closure?
 isData :: alienValue -> Bool
 isData x = x `seq` case unpackClosure# x of
   (# infoTable, _, _ #) ->
     let closType = W# (indexWord32OffAddr# infoTable 2#) in
       (closType > 0 && closType < 8) {- ClosureTypes.h: 1-7 are CONSTR_* -}
 
+-- | A squiggle-encodeable structure
 data IntList
   = LInt !Integer
   | LCons !IntList !IntList
   | LNil
   deriving (Eq, Ord, Show, Read)
 
+-- | Extract an 'IntList' from the alien dimension into ours.
 extractIntList :: alienValue -> IntList
 extractIntList x = if isData x
   then LInt $ unsafeCoerce x -- hopefully an Integer
   else unsafeCoerce A.isnil x LNil $ LCons (extractIntList $ unsafeCoerce A.car x) (extractIntList $ unsafeCoerce A.cdr x)
 
+-- | Inject an 'IntList' into the alien dimension.
 injectIntList :: IntList -> alienValue
 injectIntList LNil = unsafeCoerce A.nil
 injectIntList (LCons car cdr) = unsafeCoerce A.cons (injectIntList car) (injectIntList cdr)
@@ -33,7 +42,10 @@ injectIntList (LInt int) = unsafeCoerce int
 newtype Drawing = Drawing [(Integer, Integer)] deriving (Eq, Ord, Show)
 newtype AlienState = AlienState IntList deriving (Eq, Ord, Show, Read)
 
--- Left - want HTTP request, Right - want click
+-- Make a single interaction with a "protocol". Returns a 'Left' when the
+-- protocol is demanding to perform a transmission to the orbital ship. Returns
+-- a 'Right' when the protocol has constructed a set of pictures and demands a
+-- "click".
 interactWith :: alienValue -> AlienState -> IntList -> (AlienState, Either IntList [Drawing])
 interactWith interactor (AlienState state) input =
   let response = unsafeCoerce interactor (injectIntList state) (injectIntList input)

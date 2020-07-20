@@ -1,15 +1,16 @@
 {-# LANGUAGE LambdaCase #-}
 module Alien.Interaction where
 
+import Control.Applicative
+import Control.Monad
+import Control.Monad.Trans.State
 import Data.Bits
 import Data.List
-import Control.Monad.Trans.State
-import Control.Monad
-import Control.Applicative
 import Data.Maybe
 
 import Alien.FFI
 
+-- | Encode a structure as a squiggly
 modulate :: IntList -> [Bool]
 modulate (LInt n)     = (if n >= 0 then [False, True] else [True, False])
                         ++ replicate len True
@@ -21,6 +22,7 @@ modulate (LInt n)     = (if n >= 0 then [False, True] else [True, False])
 modulate LNil         = [False, False]
 modulate (LCons x xs) = [True, True] ++ modulate x ++ modulate xs
 
+-- | Decode a squiggly into a structure
 demodulate :: [Bool] -> IntList
 demodulate = fromMaybe (error "Demodulate parse error") . evalStateT (go <* end)
   where
@@ -37,14 +39,14 @@ demodulate = fromMaybe (error "Demodulate parse error") . evalStateT (go <* end)
         mantissa <- replicateM (4 * len) getBit
         pure $ (if sign then negate else id) $ foldl' (\x y -> 2*x + if y then 1 else 0) 0 mantissa
 
--- Execute until next click is prompted
+-- | Loop the interaction until it demands a "click".
 makeClick
   :: Monad m
-  => (IntList -> m IntList) -- ^ run HTTP request
-  -> (AlienState -> m ()) -- ^ executed on every change of state
+  => (IntList -> m IntList) -- ^ Callback to contact the alien ship
+  -> (AlienState -> m ()) -- ^ Executed on every change of state
   -> alienValue
   -> AlienState
-  -> (Integer, Integer)
+  -> (Integer, Integer) -- ^ Click coordinates
   -> m (AlienState, [Drawing])
 makeClick send step interactor stt (x, y) = go stt (LCons (LInt x) (LInt y))
   where
@@ -52,13 +54,14 @@ makeClick send step interactor stt (x, y) = go stt (LCons (LInt x) (LInt y))
       (st', Left request) -> go st' =<< send request
       (st', Right pictures) -> pure (st', pictures)
 
+-- | Loop the interaction.
 runInteraction
   :: Monad m
-  => (IntList -> m IntList) -- ^ run HTTP request
-  -> ([Drawing] -> m (Integer, Integer)) -- ^ prompt for click
-  -> (AlienState -> m ()) -- ^ executed on every change of state
+  => (IntList -> m IntList) -- ^ Callback to contact the alien ship
+  -> ([Drawing] -> m (Integer, Integer)) -- ^ Callback for displaying a list of 'Drawing's and awaiting for a "click"
+  -> (AlienState -> m ()) -- ^ Executed on every change of state
   -> alienValue
-  -> AlienState -- ^ initial state
+  -> AlienState -- ^ Initial state
   -> m ()
 runInteraction send click step interactor initState = click [] >>= goClick initState
   where
