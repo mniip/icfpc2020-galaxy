@@ -1,7 +1,7 @@
 cabal-version:       >=1.10
 
 name:                icfpc2020-galaxy
-version:             0.1.0.1
+version:             0.2.0.0
 synopsis:            A strange message received at the Pegovka observatory
 description:         A strange message received at the Pegovka observatory. For more info read https://icfpcontest2020.github.io/
 license:             MIT
@@ -16,6 +16,7 @@ library
                    , Alien.FFI
                    , Alien.Prelude
                    , Alien.Galaxy
+                   , Alien.Galaxy2
   hs-source-dirs:
       ./src
   build-depends:       base >= 4.10 && < 4.15
