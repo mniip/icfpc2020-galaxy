@@ -1,4 +1,5 @@
 {-# LANGUAGE RebindableSyntax, NegativeLiterals, NoImplicitPrelude #-}
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
 
 module Alien.Galaxy2 (galaxy2) where
 

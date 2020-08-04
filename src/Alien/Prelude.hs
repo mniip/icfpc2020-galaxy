@@ -1,4 +1,5 @@
 {-# LANGUAGE RebindableSyntax, NegativeLiterals, NoImplicitPrelude #-}
+{-# OPTIONS_GHC -Wno-unused-matches -Wno-name-shadowing -Wno-missing-signatures #-}
 
 module Alien.Prelude
   ( add
